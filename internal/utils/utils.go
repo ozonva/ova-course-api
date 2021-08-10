@@ -53,9 +53,9 @@ func FilterSlice(origin []string) []string {
 	}
 	filtered := make([]string, 0, len(origin))
 
-	filter := make(map[string]bool, len(origin))
+	filter := make(map[string]struct{}, len(origin))
 	for _, value := range filterList {
-		filter[value] = true
+		filter[value] = struct{}{}
 	}
 
 	for _, value := range origin {
