@@ -1,18 +1,19 @@
 package utils
 
-import (
-	"math"
-)
+import "errors"
 
 // SeparationSlice Разделение слайса на части
 func SeparationSlice(originSlice []string, size int) [][]string {
 
 	if size <= 0 {
-		return nil
+		return [][]string{}
 	}
 	// Определяем capacity нового слайса
-	dif := float64(len(originSlice)) / float64(size)
-	caps := int(math.Ceil(dif))
+	caps := len(originSlice) / size
+	if len(originSlice)%size > 0 {
+		caps++
+	}
+
 	newSlice := make([][]string, 0, caps)
 
 	var low int
@@ -30,13 +31,17 @@ func SeparationSlice(originSlice []string, size int) [][]string {
 
 // ReverseKeyView - Обратный ключ
 // Конвертирует отображения слайса (“ключ-значение“) в map (“значение-ключ“)
-func ReverseKeyView(origin map[int]string) map[string]int {
+func ReverseKeyView(origin map[int]string) (map[string]int, error) {
 	revert := make(map[string]int, len(origin))
 	for key, value := range origin {
+		if _, ok := revert[value]; ok {
+			err := errors.New("non-unique value")
+			return map[string]int{}, err
+		}
 		revert[value] = key
 	}
 
-	return revert
+	return revert, nil
 }
 
 // FilterSlice Фильтрация по захардкоженному списку
@@ -48,17 +53,13 @@ func FilterSlice(origin []string) []string {
 	}
 	filtered := make([]string, 0, len(origin))
 
-	filter := func(val string, array []string) bool {
-		for i := range array {
-			if array[i] == val {
-				return false
-			}
-		}
-		return true
+	filter := make(map[string]bool, len(origin))
+	for _, value := range filterList {
+		filter[value] = true
 	}
 
 	for _, value := range origin {
-		if filter(value, filterList) {
+		if _, ok := filter[value]; !ok {
 			filtered = append(filtered, value)
 		}
 	}
