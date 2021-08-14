@@ -100,10 +100,10 @@ func SliceToMap(origin []course.Course) (map[uint64]course.Course, error) {
 	result := make(map[uint64]course.Course)
 
 	for _, val := range origin {
-		if _, ok := result[val.GetId()]; ok {
+		if _, ok := result[val.Id()]; ok {
 			return nil, errors.New("map has non-unique id")
 		}
-		result[val.GetId()] = val
+		result[val.Id()] = val
 	}
 
 	return result, nil

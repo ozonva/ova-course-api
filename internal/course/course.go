@@ -48,15 +48,15 @@ func (c Course) IsActive() bool {
 	return (c.dateStart.Before(time.Now()) || c.dateStart.Equal(time.Now())) && c.dateFinish.After(time.Now())
 }
 
-func (c Course) GetId() uint64 {
+func (c Course) Id() uint64 {
 	return c.id
 }
 
-func (c Course) GetUserId() uint64 {
+func (c Course) UserId() uint64 {
 	return c.userId
 }
 
-func (c Course) GetName() string {
+func (c Course) Name() string {
 	return c.name
 }
 
@@ -64,7 +64,7 @@ func (c *Course) SetName(name string) {
 	c.name = name
 }
 
-func (c Course) GetDescription() string {
+func (c Course) Description() string {
 	return c.description
 }
 
@@ -72,7 +72,7 @@ func (c *Course) SetDescription(description string) {
 	c.description = description
 }
 
-func (c Course) GetDateStart() time.Time {
+func (c Course) DateStart() time.Time {
 	return c.dateStart
 }
 
@@ -80,7 +80,7 @@ func (c *Course) SetDateStart(dateStart time.Time) {
 	c.dateStart = dateStart
 }
 
-func (c Course) GetDateFinish() time.Time {
+func (c Course) DateFinish() time.Time {
 	return c.dateFinish
 }
 
@@ -88,6 +88,6 @@ func (c *Course) SetDateFinish(dateFinish time.Time) {
 	c.dateFinish = dateFinish
 }
 
-func (c Course) GetDateCreated() time.Time {
+func (c Course) DateCreated() time.Time {
 	return c.dateCreated
 }
