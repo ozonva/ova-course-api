@@ -1,6 +1,10 @@
 package utils
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/ozonva/ova-course-api/internal/course"
+)
 
 // SeparationSlice Разделение слайса на части
 func SeparationSlice(originSlice []string, size int) [][]string {
@@ -65,4 +69,43 @@ func FilterSlice(origin []string) []string {
 	}
 
 	return filtered
+}
+
+func SplitToBulks(origin []course.Course, chunkSize int) [][]course.Course {
+
+	if chunkSize <= 0 {
+		return [][]course.Course{}
+	}
+
+	caps := len(origin) / chunkSize
+	if len(origin)%chunkSize > 0 {
+		caps++
+	}
+
+	newSlice := make([][]course.Course, 0, caps)
+
+	for i := 0; i < caps; i += chunkSize {
+		high := i + chunkSize
+		if high > len(origin) {
+			high = len(origin)
+		}
+		newSlice = append(newSlice, origin[i:high])
+	}
+	return newSlice
+
+}
+
+func SliceToMap(origin []course.Course) (map[uint64]course.Course, error) {
+
+	result := make(map[uint64]course.Course)
+
+	for _, val := range origin {
+		if _, ok := result[val.Id()]; ok {
+			return nil, errors.New("map has non-unique id")
+		}
+		result[val.Id()] = val
+	}
+
+	return result, nil
+
 }

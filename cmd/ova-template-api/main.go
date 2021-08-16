@@ -3,6 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/ozonva/ova-course-api/internal/utils"
+	"os"
+)
+
+const (
+	configPath = "configs/config.yml"
 )
 
 func main() {
@@ -36,5 +41,28 @@ func main() {
 		fmt.Printf("Входной срез: %v\n", origin)
 		fmt.Printf("Выходной срез: %v\n", filtered)
 	}()
+
+	// Задание 3 A Используя defer и функтор реализовать открытие и закрытие файла в цикле
+	readConfig := func(filename string) (err error) {
+		r, err := os.Open(filename)
+		if err != nil {
+			return
+		}
+		defer func(r *os.File) {
+			err = r.Close()
+		}(r)
+
+		// Здесь работа с файлом по необходимости
+
+		return
+	}
+
+	for i := 0; i < 100; i++ {
+		err := readConfig(configPath)
+		if err != nil {
+			fmt.Printf("Error: %s ", err.Error())
+			break
+		}
+	}
 
 }
