@@ -77,17 +77,18 @@ func SplitToBulks(origin []course.Course, chunkSize int) [][]course.Course {
 		return [][]course.Course{}
 	}
 
-	caps := len(origin) / chunkSize
+	lenOrigin := len(origin)
+	caps := lenOrigin / chunkSize
 	if len(origin)%chunkSize > 0 {
 		caps++
 	}
 
 	newSlice := make([][]course.Course, 0, caps)
 
-	for i := 0; i < caps; i += chunkSize {
+	for i := 0; i < lenOrigin; i += chunkSize {
 		high := i + chunkSize
-		if high > len(origin) {
-			high = len(origin)
+		if high > lenOrigin {
+			high = lenOrigin
 		}
 		newSlice = append(newSlice, origin[i:high])
 	}
