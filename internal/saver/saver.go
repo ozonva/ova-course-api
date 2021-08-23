@@ -61,6 +61,7 @@ func (s *saver) Init() {
 func (s *saver) Save(entity course.Course) {
 	if s.closed {
 		log.Println("error: unable to save the object is closed")
+		return
 	}
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -83,6 +84,7 @@ func (s *saver) flush() {
 func (s *saver) Close() {
 	if s.closed {
 		log.Println("warning: unable to closed the object is closed")
+		return
 	}
 
 	s.closed = true
