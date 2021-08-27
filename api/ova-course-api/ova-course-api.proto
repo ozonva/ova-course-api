@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+
+option go_package = "github.com/ozonva/ova-course-api/pkg/ova-course-api;ova_course_api";
+
+package ova.course.api;
+
+// Courses сервис для работы с курсами
+service Course {
+    // Создание курса
+    rpc CreateCourseV1(CreateCourseV1Request) returns (CreateCourseV1Response) {};
+    // Описание курса
+    rpc DescribeCourseV1(DescribeCourseV1Request) returns (DescribeCourseV1Response) {};
+    // Список всех доступных курсов
+    rpc ListCourseV1(google.protobuf.Empty) returns (ListCourseV1Response) {};
+    // Удаление курса
+    rpc RemoveCourseV1(RemoveCourseV1Request) returns (RemoveCourseV1Response) {};
+
+}
+
+message CreateCourseV1Request {
+    uint64 userId = 1;
+    string name = 2;
+    google.protobuf.Timestamp date_start = 3;
+    google.protobuf.Timestamp date_finish = 4;
+}
+
+message CreateCourseV1Response {
+    uint64 id = 1;
+}
+
+message DescribeCourseV1Request {
+    uint64 id = 1;
+}
+
+message DescribeCourseV1Response {
+    uint64 id = 1;
+    uint64 userId = 2;
+    string name = 3;
+    string description = 4;
+    google.protobuf.Timestamp date_start = 5;
+    google.protobuf.Timestamp date_finish = 6;
+    google.protobuf.Timestamp date_created = 7;
+}
+message ListCourseV1Response {
+    repeated DescribeCourseV1Response data = 1;
+}
+
+message RemoveCourseV1Request {
+    uint64 id = 1;
+}
+
+message RemoveCourseV1Response {
+    bool success = 1;
+}

@@ -19,11 +19,11 @@ type Course struct {
 	dateCreated time.Time
 }
 
-func New(id uint64, userId uint64, Name string, dateStart time.Time, dateFinish time.Time) Course {
+func New(id uint64, userId uint64, name string, dateStart time.Time, dateFinish time.Time) Course {
 	return Course{
 		id,
 		userId,
-		Name,
+		name,
 		"",
 		dateStart,
 		dateFinish,
