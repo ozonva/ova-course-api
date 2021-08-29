@@ -10,7 +10,7 @@ import (
 // CreateCourseV1  Создание курса
 func (g *GRPCServer) CreateCourseV1(ctx context.Context, request *api.CreateCourseV1Request) (*api.CreateCourseV1Response, error) {
 	log.Info().Msg("Request: CreateCourseV1")
-	return &api.CreateCourseV1Response{Id: 1}, nil
+	return &api.CreateCourseV1Response{Success: true}, nil
 }
 
 // DescribeCourseV1  Описание курса

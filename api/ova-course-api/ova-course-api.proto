@@ -29,7 +29,7 @@ message CreateCourseV1Request {
 }
 
 message CreateCourseV1Response {
-    uint64 id = 1;
+    bool success = 1;
 }
 
 message DescribeCourseV1Request {

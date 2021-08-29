@@ -98,7 +98,7 @@ type CreateCourseV1Response struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 }
 
 func (x *CreateCourseV1Response) Reset() {
@@ -133,11 +133,11 @@ func (*CreateCourseV1Response) Descriptor() ([]byte, []int) {
 	return file_api_ova_course_api_ova_course_api_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *CreateCourseV1Response) GetId() uint64 {
+func (x *CreateCourseV1Response) GetId() bool {
 	if x != nil {
-		return x.Id
+		return x.Success
 	}
-	return 0
+	return false
 }
 
 type DescribeCourseV1Request struct {
