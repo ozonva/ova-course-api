@@ -14,10 +14,12 @@ build: .install-go-deps .vendor-proto .proto-generate .build
 	go get -u google.golang.org/protobuf/types/known/timestamppb
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
 	go install google.golang.org/protobuf/cmd/protoc-gen-go
+	go get -u github.com/jmoiron/sqlx
+	go get -u github.com/joho/godotenv
 
 
-.PHONY: vendor-proto
-vendor-proto:
+.PHONY: .vendor-proto
+.vendor-proto:
 	mkdir -p vendor.protogen
 	mkdir -p vendor.protogen/api/ova-course-api
 	cp api/ova-course-api/ova-course-api.proto vendor.protogen/api/ova-course-api/ova-course-api.proto
