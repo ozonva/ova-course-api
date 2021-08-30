@@ -2,12 +2,18 @@ package main
 
 import (
 	"fmt"
+	server "github.com/ozonva/ova-course-api/internal/server"
 	"github.com/ozonva/ova-course-api/internal/utils"
+	api "github.com/ozonva/ova-course-api/pkg/ova-course-api"
+	"google.golang.org/grpc"
+	"log"
+	"net"
 	"os"
 )
 
 const (
 	configPath = "configs/config.yml"
+	grpcPort   = ":82"
 )
 
 func main() {
@@ -63,6 +69,19 @@ func main() {
 			fmt.Printf("Error: %s ", err.Error())
 			break
 		}
+	}
+
+	// сервер gRPC
+	s := grpc.NewServer()
+	api.RegisterCourseServer(s, server.NewCourseServer())
+
+	listen, err := net.Listen("tcp", grpcPort)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	if err := s.Serve(listen); err != nil {
+		log.Fatalf("failed to serve: %v", err)
 	}
 
 }
