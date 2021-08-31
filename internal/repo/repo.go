@@ -1,7 +1,6 @@
 package repo
 
 import (
-	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 	"github.com/ozonva/ova-course-api/internal/course"
@@ -76,7 +75,6 @@ func (r repo) DescribeCourses(courseId uint64) (*course.Course, error) {
 }
 
 func (r repo) RemoveCourse(courseId uint64) error {
-	query := fmt.Sprintf("DELETE FROM courses id = $1")
 	query, args, err := squirrel.
 		Delete("courses").
 		Where(squirrel.Eq{"id": courseId}).

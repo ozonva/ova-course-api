@@ -2,6 +2,7 @@ package ova_course_api
 
 import (
 	"context"
+	"errors"
 	"github.com/ozonva/ova-course-api/internal/course"
 	"github.com/ozonva/ova-course-api/internal/flusher"
 	"github.com/ozonva/ova-course-api/internal/saver"
@@ -56,6 +57,12 @@ func (g *GRPCServer) DescribeCourseV1(ctx context.Context, req *api.DescribeCour
 		Uint64("userId", req.GetId()).
 		Msg("request describeCourseV1")
 
+	if req.GetId() == 0 {
+		err := errors.New("id can't be 0")
+		log.Error().Err(err).Msg("")
+		return nil, err
+	}
+
 	course, err := g.repo.DescribeCourses(req.GetId())
 	if err != nil {
 		log.Error().Err(err).Msg("")
@@ -89,7 +96,11 @@ func (g *GRPCServer) ListCourseV1(ctx context.Context, req *api.ListCourseV1Requ
 // RemoveCourseV1  Удаление курса
 func (g *GRPCServer) RemoveCourseV1(ctx context.Context, req *api.RemoveCourseV1Request) (*api.RemoveCourseV1Response, error) {
 	log.Info().Msg("Request: RemoveCourseV1")
-
+	if req.GetId() == 0 {
+		err := errors.New("id can't be zero")
+		log.Error().Err(err).Msg("")
+		return nil, err
+	}
 	err := g.repo.RemoveCourse(req.GetId())
 	if err != nil {
 		log.Error().Err(err).Msg("")

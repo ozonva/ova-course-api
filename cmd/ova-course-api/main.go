@@ -74,7 +74,7 @@ func main() {
 	}
 
 	if err := godotenv.Load(); err != nil {
-		fmt.Printf("error loading .env: %s", err.Error())
+		panic(fmt.Sprintf("error loading .env: %s", err.Error()))
 	}
 
 	//BD
@@ -86,6 +86,10 @@ func main() {
 		Password: os.Getenv("DB_PASSWORD"),
 		SSLMode:  "disabled",
 	})
+
+	if err != nil {
+		panic(fmt.Sprintf("error init db: %s", err.Error()))
+	}
 
 	// сервер gRPC
 	s := grpc.NewServer()
