@@ -89,7 +89,7 @@ func main() {
 
 	// сервер gRPC
 	s := grpc.NewServer()
-	api.RegisterCourseServer(s, server.NewCourseServer())
+	api.RegisterCourseServer(s, server.NewCourseServer(db))
 
 	listen, err := net.Listen("tcp", grpcPort)
 	if err != nil {

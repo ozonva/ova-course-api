@@ -11,7 +11,6 @@ import (
 
 type Saver interface {
 	Save(entity course.Course)
-	Init()
 	Close()
 }
 
@@ -29,16 +28,19 @@ type saver struct {
 
 // NewSaver возвращает Saver с поддержкой переодического сохранения
 func NewSaver(capacity uint, flusher flusher.Flusher, interval time.Duration) Saver {
-	return &saver{
+	s := &saver{
 		capacity: capacity,
 		flusher:  flusher,
 		courses:  make([]course.Course, 0, capacity),
 		interval: interval,
 	}
 
+	s.init()
+
+	return s
 }
 
-func (s *saver) Init() {
+func (s *saver) init() {
 	s.once.Do(func() {
 		s.ticketChan = time.NewTicker(s.interval)
 		s.killChan = make(chan struct{}, 1)

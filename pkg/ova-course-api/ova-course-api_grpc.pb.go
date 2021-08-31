@@ -7,7 +7,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -24,7 +23,7 @@ type CourseClient interface {
 	// Описание курса
 	DescribeCourseV1(ctx context.Context, in *DescribeCourseV1Request, opts ...grpc.CallOption) (*DescribeCourseV1Response, error)
 	// Список всех доступных курсов
-	ListCourseV1(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListCourseV1Response, error)
+	ListCourseV1(ctx context.Context, in *ListCourseV1Request, opts ...grpc.CallOption) (*ListCourseV1Response, error)
 	// Удаление курса
 	RemoveCourseV1(ctx context.Context, in *RemoveCourseV1Request, opts ...grpc.CallOption) (*RemoveCourseV1Response, error)
 }
@@ -55,7 +54,7 @@ func (c *courseClient) DescribeCourseV1(ctx context.Context, in *DescribeCourseV
 	return out, nil
 }
 
-func (c *courseClient) ListCourseV1(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListCourseV1Response, error) {
+func (c *courseClient) ListCourseV1(ctx context.Context, in *ListCourseV1Request, opts ...grpc.CallOption) (*ListCourseV1Response, error) {
 	out := new(ListCourseV1Response)
 	err := c.cc.Invoke(ctx, "/ova.course.api.Course/ListCourseV1", in, out, opts...)
 	if err != nil {
@@ -82,7 +81,7 @@ type CourseServer interface {
 	// Описание курса
 	DescribeCourseV1(context.Context, *DescribeCourseV1Request) (*DescribeCourseV1Response, error)
 	// Список всех доступных курсов
-	ListCourseV1(context.Context, *emptypb.Empty) (*ListCourseV1Response, error)
+	ListCourseV1(context.Context, *ListCourseV1Request) (*ListCourseV1Response, error)
 	// Удаление курса
 	RemoveCourseV1(context.Context, *RemoveCourseV1Request) (*RemoveCourseV1Response, error)
 	mustEmbedUnimplementedCourseServer()
@@ -98,7 +97,7 @@ func (UnimplementedCourseServer) CreateCourseV1(context.Context, *CreateCourseV1
 func (UnimplementedCourseServer) DescribeCourseV1(context.Context, *DescribeCourseV1Request) (*DescribeCourseV1Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribeCourseV1 not implemented")
 }
-func (UnimplementedCourseServer) ListCourseV1(context.Context, *emptypb.Empty) (*ListCourseV1Response, error) {
+func (UnimplementedCourseServer) ListCourseV1(context.Context, *ListCourseV1Request) (*ListCourseV1Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCourseV1 not implemented")
 }
 func (UnimplementedCourseServer) RemoveCourseV1(context.Context, *RemoveCourseV1Request) (*RemoveCourseV1Response, error) {
@@ -154,7 +153,7 @@ func _Course_DescribeCourseV1_Handler(srv interface{}, ctx context.Context, dec 
 }
 
 func _Course_ListCourseV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
+	in := new(ListCourseV1Request)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -166,7 +165,7 @@ func _Course_ListCourseV1_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/ova.course.api.Course/ListCourseV1",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CourseServer).ListCourseV1(ctx, req.(*emptypb.Empty))
+		return srv.(CourseServer).ListCourseV1(ctx, req.(*ListCourseV1Request))
 	}
 	return interceptor(ctx, in, info, handler)
 }

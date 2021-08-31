@@ -1,5 +1,7 @@
+DBSTRING:="postgres://$(DB_USERNAME):$(DB_PASSWORD)@localhost:5430/$(DB_NAME)?sslmode=disable"
+
 .PHONY: build
-build: .install-go-deps .vendor-proto .proto-generate .build
+build: .install-go-deps .vendor-proto .proto-generate migration-up .build
 
 .PHONY: .install-go-deps
 .install-go-deps:
@@ -16,6 +18,10 @@ build: .install-go-deps .vendor-proto .proto-generate .build
 	go install google.golang.org/protobuf/cmd/protoc-gen-go
 	go get -u github.com/jmoiron/sqlx
 	go get -u github.com/joho/godotenv
+	go get -u github.com/pressly/goose/v3/cmd/goose
+	go get -u github.com/onsi/ginkgo
+	go get -u github.com/onsi/gomega
+	go get -u github.com/Masterminds/squirrel
 
 
 .PHONY: .vendor-proto
@@ -44,4 +50,11 @@ build: .install-go-deps .vendor-proto .proto-generate .build
 .PHONY: .build
 .build:
 	go build -o ./bin/main ./cmd/ova-course-api
+
+ .PHONY: migration-up
+ migration-up:
+	goose -dir=migrations postgres "user=$(DB_USER) dbname=$(DB_NAME) password=$(DB_PASSWORD) sslmode=disable" up
+
+
+
 

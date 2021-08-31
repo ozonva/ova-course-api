@@ -10,24 +10,23 @@ const (
 )
 
 type Course struct {
-	id          uint64
-	userId      uint64
-	name        string
-	description string
-	dateStart   time.Time
-	dateFinish  time.Time
-	dateCreated time.Time
+	id          uint64    `db:"id"`
+	userId      uint64    `db:"user_id"`
+	name        string    `db:"name"`
+	description string    `db:"description"`
+	dateStart   time.Time `db:"date_start"`
+	dateFinish  time.Time `db:"date_finish"`
+	dateCreated time.Time `db:"date_created"`
 }
 
-func New(id uint64, userId uint64, name string, dateStart time.Time, dateFinish time.Time) Course {
+func New(userId uint64, name string, dateStart time.Time, dateFinish time.Time) Course {
 	return Course{
-		id,
-		userId,
-		name,
-		"",
-		dateStart,
-		dateFinish,
-		time.Now(),
+		userId:      userId,
+		name:        name,
+		description: "",
+		dateStart:   dateStart,
+		dateFinish:  dateFinish,
+		dateCreated: time.Now(),
 	}
 }
 
