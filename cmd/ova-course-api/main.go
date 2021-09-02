@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
+	"github.com/ozonva/ova-course-api/internal/repo"
 	server "github.com/ozonva/ova-course-api/internal/server"
 	"github.com/ozonva/ova-course-api/internal/utils"
 	api "github.com/ozonva/ova-course-api/pkg/ova-course-api"
@@ -71,9 +73,27 @@ func main() {
 		}
 	}
 
+	if err := godotenv.Load(); err != nil {
+		panic(fmt.Sprintf("error loading .env: %s", err.Error()))
+	}
+
+	//BD
+	db, err := repo.NewDB(repo.Config{
+		Host:     os.Getenv("DB_HOST"),
+		Port:     os.Getenv("DB_PORT"),
+		Username: os.Getenv("DB_USERNAME"),
+		DBName:   os.Getenv("DB_NAME"),
+		Password: os.Getenv("DB_PASSWORD"),
+		SSLMode:  "disabled",
+	})
+
+	if err != nil {
+		panic(fmt.Sprintf("error init db: %s", err.Error()))
+	}
+
 	// сервер gRPC
 	s := grpc.NewServer()
-	api.RegisterCourseServer(s, server.NewCourseServer())
+	api.RegisterCourseServer(s, server.NewCourseServer(db))
 
 	listen, err := net.Listen("tcp", grpcPort)
 	if err != nil {

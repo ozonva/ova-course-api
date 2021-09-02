@@ -282,6 +282,61 @@ func (x *DescribeCourseV1Response) GetDateCreated() *timestamppb.Timestamp {
 	return nil
 }
 
+type ListCourseV1Request struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Limit  uint64 `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	Offset uint64 `protobuf:"bytes,2,opt,name=offset,proto3" json:"offset,omitempty"`
+}
+
+func (x *ListCourseV1Request) Reset() {
+	*x = ListCourseV1Request{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_api_ova_course_api_ova_course_api_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListCourseV1Request) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListCourseV1Request) ProtoMessage() {}
+
+func (x *ListCourseV1Request) ProtoReflect() protoreflect.Message {
+	mi := &file_api_ova_course_api_ova_course_api_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListCourseV1Request.ProtoReflect.Descriptor instead.
+func (*ListCourseV1Request) Descriptor() ([]byte, []int) {
+	return file_api_ova_course_api_ova_course_api_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *ListCourseV1Request) GetLimit() uint64 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *ListCourseV1Request) GetOffset() uint64 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
 type ListCourseV1Response struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

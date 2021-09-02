@@ -20,9 +20,9 @@ var _ = Describe("Flusher", func() {
 		testFlusher flusher.Flusher
 
 		courses = []course.Course{
-			course.New(1, 1, "", time.Date(2021, time.April, 1, 0, 0, 0, 0, time.UTC), time.Date(2021, time.April, 14, 0, 0, 0, 0, time.UTC)),
-			course.New(2, 2, "", time.Date(2021, time.May, 1, 0, 0, 0, 0, time.UTC), time.Date(2021, time.May, 14, 0, 0, 0, 0, time.UTC)),
-			course.New(3, 4, "", time.Date(2021, time.June, 1, 0, 0, 0, 0, time.UTC), time.Date(2021, time.June, 14, 0, 0, 0, 0, time.UTC)),
+			course.New(1, "", time.Date(2021, time.April, 1, 0, 0, 0, 0, time.UTC), time.Date(2021, time.April, 14, 0, 0, 0, 0, time.UTC)),
+			course.New(2, "", time.Date(2021, time.May, 1, 0, 0, 0, 0, time.UTC), time.Date(2021, time.May, 14, 0, 0, 0, 0, time.UTC)),
+			course.New(4, "", time.Date(2021, time.June, 1, 0, 0, 0, 0, time.UTC), time.Date(2021, time.June, 14, 0, 0, 0, 0, time.UTC)),
 		}
 	)
 

@@ -15,7 +15,7 @@ service Course {
     // Описание курса
     rpc DescribeCourseV1(DescribeCourseV1Request) returns (DescribeCourseV1Response) {};
     // Список всех доступных курсов
-    rpc ListCourseV1(google.protobuf.Empty) returns (ListCourseV1Response) {};
+    rpc ListCourseV1(ListCourseV1Request) returns (ListCourseV1Response) {};
     // Удаление курса
     rpc RemoveCourseV1(RemoveCourseV1Request) returns (RemoveCourseV1Response) {};
 
@@ -34,6 +34,11 @@ message CreateCourseV1Response {
 
 message DescribeCourseV1Request {
     uint64 id = 1;
+}
+
+message ListCourseV1Request {
+    uint64 limit = 1;
+    uint64 offset = 2;
 }
 
 message DescribeCourseV1Response {
