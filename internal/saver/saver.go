@@ -1,6 +1,9 @@
 package saver
 
 import (
+	"context"
+	"github.com/opentracing/opentracing-go"
+	opentracingLog "github.com/opentracing/opentracing-go/log"
 	"log"
 	"sync"
 	"time"
@@ -22,17 +25,21 @@ type saver struct {
 	killChan   chan struct{}
 	capacity   uint
 	flusher    flusher.Flusher
+	ctx        context.Context
+	parentSpan opentracing.Span
 	courses    []course.Course
 	closed     bool
 }
 
 // NewSaver возвращает Saver с поддержкой переодического сохранения
-func NewSaver(capacity uint, flusher flusher.Flusher, interval time.Duration) Saver {
+func NewSaver(ctx context.Context, parentSpan opentracing.Span, capacity uint, flusher flusher.Flusher, interval time.Duration) Saver {
 	s := &saver{
-		capacity: capacity,
-		flusher:  flusher,
-		courses:  make([]course.Course, 0, capacity),
-		interval: interval,
+		capacity:   capacity,
+		flusher:    flusher,
+		courses:    make([]course.Course, 0, capacity),
+		interval:   interval,
+		ctx:        ctx,
+		parentSpan: parentSpan,
 	}
 
 	s.init()
@@ -75,11 +82,16 @@ func (s *saver) flush() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
+	span := opentracing.StartSpan("flush", opentracing.ChildOf(s.parentSpan.Context()))
+	defer span.Finish()
+	span.LogFields(opentracingLog.Int("Save count", len(s.courses)))
+
 	unsavedCourses := s.flusher.Flush(s.courses)
 	s.courses = make([]course.Course, 0, cap(s.courses))
 	if unsavedCourses != nil {
 		log.Printf("warning: some courses were not saved: \n%v\n", unsavedCourses)
 		s.courses = append(s.courses, unsavedCourses...)
+		span.LogFields(opentracingLog.Int("Unsaved count", len(s.courses)))
 	}
 }
 

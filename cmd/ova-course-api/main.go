@@ -1,15 +1,20 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/joho/godotenv"
+	kafkaClient "github.com/ozonva/ova-course-api/internal/kafka-client"
+	"github.com/ozonva/ova-course-api/internal/metrics"
 	"github.com/ozonva/ova-course-api/internal/repo"
 	server "github.com/ozonva/ova-course-api/internal/server"
 	"github.com/ozonva/ova-course-api/internal/utils"
 	api "github.com/ozonva/ova-course-api/pkg/ova-course-api"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"net/http"
 	"os"
 )
 
@@ -77,6 +82,14 @@ func main() {
 		panic(fmt.Sprintf("error loading .env: %s", err.Error()))
 	}
 
+	go initPrometheusMetrics()
+
+	// init producer kafka
+	producer, err := initProducerKafka()
+	if err != nil {
+		log.Fatalf("failed to init kafka: %s", err)
+	}
+
 	//BD
 	db, err := repo.NewDB(repo.Config{
 		Host:     os.Getenv("DB_HOST"),
@@ -93,7 +106,7 @@ func main() {
 
 	// сервер gRPC
 	s := grpc.NewServer()
-	api.RegisterCourseServer(s, server.NewCourseServer(db))
+	api.RegisterCourseServer(s, server.NewCourseServer(db, producer, metrics.NewMetrics()))
 
 	listen, err := net.Listen("tcp", grpcPort)
 	if err != nil {
@@ -104,4 +117,24 @@ func main() {
 		log.Fatalf("failed to serve: %v", err)
 	}
 
+}
+
+func initProducerKafka() (kafkaClient.Producer, error) {
+
+	addr := fmt.Sprintf("%s:%s", os.Getenv("KAFKA_HOST"), os.Getenv("KAFKA_PORT"))
+
+	producer, err := kafkaClient.New(context.Background(), "tcp", addr, "CourseEnents", 0)
+	if err != nil {
+		return nil, err
+	}
+
+	return producer, nil
+}
+
+func initPrometheusMetrics() {
+	http.Handle("/metrics", promhttp.Handler())
+	err := http.ListenAndServe(":9100", nil)
+	if err != nil {
+		log.Fatalf("failed to serve metrics: %v", err)
+	}
 }

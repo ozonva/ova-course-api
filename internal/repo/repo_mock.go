@@ -48,6 +48,21 @@ func (mr *MockCourseRepoMockRecorder) AddCourse(entities interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCourse", reflect.TypeOf((*MockCourseRepo)(nil).AddCourse), entities)
 }
 
+// AddOneCourse mocks base method.
+func (m *MockCourseRepo) AddOneCourse(entity course.Course) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddOneCourse", entity)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddOneCourse indicates an expected call of AddOneCourse.
+func (mr *MockCourseRepoMockRecorder) AddOneCourse(entity interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddOneCourse", reflect.TypeOf((*MockCourseRepo)(nil).AddOneCourse), entity)
+}
+
 // DescribeCourses mocks base method.
 func (m *MockCourseRepo) DescribeCourses(entityId uint64) (*course.Course, error) {
 	m.ctrl.T.Helper()
@@ -90,4 +105,18 @@ func (m *MockCourseRepo) RemoveCourse(courseId uint64) error {
 func (mr *MockCourseRepoMockRecorder) RemoveCourse(courseId interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveCourse", reflect.TypeOf((*MockCourseRepo)(nil).RemoveCourse), courseId)
+}
+
+// UpdateCourse mocks base method.
+func (m *MockCourseRepo) UpdateCourse(entity course.Course) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateCourse", entity)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// UpdateCourse indicates an expected call of UpdateCourse.
+func (mr *MockCourseRepoMockRecorder) UpdateCourse(entity interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCourse", reflect.TypeOf((*MockCourseRepo)(nil).UpdateCourse), entity)
 }

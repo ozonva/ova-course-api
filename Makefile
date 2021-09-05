@@ -22,6 +22,9 @@ build: .install-go-deps .vendor-proto .proto-generate migration-up .build
 	go get -u github.com/onsi/ginkgo
 	go get -u github.com/onsi/gomega
 	go get -u github.com/Masterminds/squirrel
+	go get -u github.com/opentracing/opentracing-go
+	go get -u github.com/segmentio/kafka-go
+
 
 
 .PHONY: .vendor-proto
