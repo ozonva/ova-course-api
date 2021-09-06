@@ -11,13 +11,17 @@ package ova.course.api;
 // Courses сервис для работы с курсами
 service Course {
     // Создание курса
-    rpc CreateCourseV1(CreateCourseV1Request) returns (CreateCourseV1Response) {};
+    rpc CreateCourseV1(CreateCourseV1Request) returns (SuccessV1) {};
     // Описание курса
     rpc DescribeCourseV1(DescribeCourseV1Request) returns (DescribeCourseV1Response) {};
     // Список всех доступных курсов
     rpc ListCourseV1(ListCourseV1Request) returns (ListCourseV1Response) {};
     // Удаление курса
-    rpc RemoveCourseV1(RemoveCourseV1Request) returns (RemoveCourseV1Response) {};
+    rpc RemoveCourseV1(RemoveCourseV1Request) returns (SuccessV1) {};
+    // Множественное добавление курсов
+    rpc MultiCreateCourseV1(MultiCreateCourseV1Request) returns (MultiCreateCourseV1Response) {};
+    // Обновление курса
+    rpc UpdateCourseV1(UpdateCourseV1Request) returns (SuccessV1) {};
 
 }
 
@@ -28,8 +32,13 @@ message CreateCourseV1Request {
     google.protobuf.Timestamp date_finish = 4;
 }
 
-message CreateCourseV1Response {
+message SuccessV1 {
     bool success = 1;
+}
+
+message SuccessErrorV1{
+    bool success = 1;
+    string error = 2;
 }
 
 message DescribeCourseV1Request {
@@ -58,6 +67,19 @@ message RemoveCourseV1Request {
     uint64 id = 1;
 }
 
-message RemoveCourseV1Response {
-    bool success = 1;
+message MultiCreateCourseV1Request {
+    repeated CreateCourseV1Request data = 1;
+}
+message MultiCreateCourseV1Response {
+    repeated SuccessErrorV1 data = 1;
+}
+
+message UpdateCourseV1Request {
+    uint64 id = 1;
+    uint64 userId = 2;
+    string name = 3;
+    string description = 4;
+    google.protobuf.Timestamp date_start = 5;
+    google.protobuf.Timestamp date_finish = 6;
+    google.protobuf.Timestamp date_created = 7;
 }

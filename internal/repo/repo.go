@@ -1,6 +1,7 @@
 package repo
 
 import (
+	"errors"
 	"github.com/Masterminds/squirrel"
 	"github.com/jmoiron/sqlx"
 	"github.com/ozonva/ova-course-api/internal/course"
@@ -14,6 +15,8 @@ type CourseRepo interface {
 	ListCourses(limit, offset uint64) ([]course.Course, error)
 	DescribeCourses(entityId uint64) (*course.Course, error)
 	RemoveCourse(courseId uint64) error
+	UpdateCourse(entity course.Course) error
+	AddOneCourse(entity course.Course) (int64, error)
 }
 
 type repo struct {
@@ -21,11 +24,12 @@ type repo struct {
 }
 
 func NewRepo(db *sqlx.DB) CourseRepo {
-	return &repo{db: db}
+	return &repo{
+		db: db,
+	}
 }
 
 func (r repo) AddCourse(entities []course.Course) error {
-
 	bld := squirrel.
 		Insert("courses").
 		Columns("user_id", "name", "description", "date_start", "date_finish", "date_created")
@@ -39,6 +43,26 @@ func (r repo) AddCourse(entities []course.Course) error {
 
 	_, err = r.db.Exec(query, args...)
 	return err
+}
+
+func (r repo) AddOneCourse(entity course.Course) (int64, error) {
+	bld := squirrel.
+		Insert("courses").
+		Columns("user_id", "name", "description", "date_start", "date_finish", "date_created").
+		Values(entity.UserId(), entity.Name(), entity.Description(), entity.DateStart(), entity.DateFinish(), entity.DateCreated())
+
+	query, args, err := bld.ToSql()
+	if err != nil {
+		return 0, err
+	}
+
+	result, err := r.db.Exec(query, args...)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := result.LastInsertId()
+	return id, err
 }
 
 func (r repo) ListCourses(limit, offset uint64) ([]course.Course, error) {
@@ -84,4 +108,32 @@ func (r repo) RemoveCourse(courseId uint64) error {
 	}
 	_, err = r.db.Exec(query, args)
 	return err
+}
+
+func (r *repo) UpdateCourse(entity course.Course) error {
+	query, args, err := squirrel.
+		Update("courses").
+		Set("user_id", entity.UserId()).
+		Set("name", entity.Name()).
+		Set("description", entity.Description()).
+		Set("date_start", entity.DateStart()).
+		Set("date_finish", entity.DateFinish()).
+		Where(squirrel.Eq{"id": entity.Id()}).
+		ToSql()
+
+	if err != nil {
+		return err
+	}
+
+	result, err := r.db.Exec(query, args...)
+	if err != nil {
+		return err
+	}
+
+	cnt, _ := result.RowsAffected()
+	if cnt == 0 {
+		return errors.New("no rows for updated")
+	}
+
+	return nil
 }

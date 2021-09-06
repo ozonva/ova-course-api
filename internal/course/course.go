@@ -10,13 +10,13 @@ const (
 )
 
 type Course struct {
-	id          uint64    `db:"id"`
-	userId      uint64    `db:"user_id"`
-	name        string    `db:"name"`
-	description string    `db:"description"`
-	dateStart   time.Time `db:"date_start"`
-	dateFinish  time.Time `db:"date_finish"`
-	dateCreated time.Time `db:"date_created"`
+	id          uint64    `json:"id" db:"id"`
+	userId      uint64    `json:"user_id" db:"user_id"`
+	name        string    `json:"name" db:"name"`
+	description string    `json:"description" db:"description"`
+	dateStart   time.Time `json:"date_start" db:"date_start"`
+	dateFinish  time.Time `json:"date_finish" db:"date_finish"`
+	dateCreated time.Time `json:"date_create" db:"date_created"`
 }
 
 func New(userId uint64, name string, dateStart time.Time, dateFinish time.Time) Course {
@@ -49,6 +49,9 @@ func (c Course) IsActive() bool {
 
 func (c Course) Id() uint64 {
 	return c.id
+}
+func (c Course) SetId(id uint64) {
+	c.id = id
 }
 
 func (c Course) UserId() uint64 {

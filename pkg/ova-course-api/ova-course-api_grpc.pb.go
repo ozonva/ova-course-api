@@ -19,13 +19,17 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CourseClient interface {
 	// Создание курса
-	CreateCourseV1(ctx context.Context, in *CreateCourseV1Request, opts ...grpc.CallOption) (*CreateCourseV1Response, error)
+	CreateCourseV1(ctx context.Context, in *CreateCourseV1Request, opts ...grpc.CallOption) (*SuccessV1, error)
 	// Описание курса
 	DescribeCourseV1(ctx context.Context, in *DescribeCourseV1Request, opts ...grpc.CallOption) (*DescribeCourseV1Response, error)
 	// Список всех доступных курсов
 	ListCourseV1(ctx context.Context, in *ListCourseV1Request, opts ...grpc.CallOption) (*ListCourseV1Response, error)
 	// Удаление курса
-	RemoveCourseV1(ctx context.Context, in *RemoveCourseV1Request, opts ...grpc.CallOption) (*RemoveCourseV1Response, error)
+	RemoveCourseV1(ctx context.Context, in *RemoveCourseV1Request, opts ...grpc.CallOption) (*SuccessV1, error)
+	// Множественное добавление курсов
+	MultiCreateCourseV1(ctx context.Context, in *MultiCreateCourseV1Request, opts ...grpc.CallOption) (*MultiCreateCourseV1Response, error)
+	// Обновление курса
+	UpdateCourseV1(ctx context.Context, in *UpdateCourseV1Request, opts ...grpc.CallOption) (*SuccessV1, error)
 }
 
 type courseClient struct {
@@ -36,8 +40,8 @@ func NewCourseClient(cc grpc.ClientConnInterface) CourseClient {
 	return &courseClient{cc}
 }
 
-func (c *courseClient) CreateCourseV1(ctx context.Context, in *CreateCourseV1Request, opts ...grpc.CallOption) (*CreateCourseV1Response, error) {
-	out := new(CreateCourseV1Response)
+func (c *courseClient) CreateCourseV1(ctx context.Context, in *CreateCourseV1Request, opts ...grpc.CallOption) (*SuccessV1, error) {
+	out := new(SuccessV1)
 	err := c.cc.Invoke(ctx, "/ova.course.api.Course/CreateCourseV1", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -63,9 +67,27 @@ func (c *courseClient) ListCourseV1(ctx context.Context, in *ListCourseV1Request
 	return out, nil
 }
 
-func (c *courseClient) RemoveCourseV1(ctx context.Context, in *RemoveCourseV1Request, opts ...grpc.CallOption) (*RemoveCourseV1Response, error) {
-	out := new(RemoveCourseV1Response)
+func (c *courseClient) RemoveCourseV1(ctx context.Context, in *RemoveCourseV1Request, opts ...grpc.CallOption) (*SuccessV1, error) {
+	out := new(SuccessV1)
 	err := c.cc.Invoke(ctx, "/ova.course.api.Course/RemoveCourseV1", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseClient) MultiCreateCourseV1(ctx context.Context, in *MultiCreateCourseV1Request, opts ...grpc.CallOption) (*MultiCreateCourseV1Response, error) {
+	out := new(MultiCreateCourseV1Response)
+	err := c.cc.Invoke(ctx, "/ova.course.api.Course/MultiCreateCourseV1", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *courseClient) UpdateCourseV1(ctx context.Context, in *UpdateCourseV1Request, opts ...grpc.CallOption) (*SuccessV1, error) {
+	out := new(SuccessV1)
+	err := c.cc.Invoke(ctx, "/ova.course.api.Course/UpdateCourseV1", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,13 +99,17 @@ func (c *courseClient) RemoveCourseV1(ctx context.Context, in *RemoveCourseV1Req
 // for forward compatibility
 type CourseServer interface {
 	// Создание курса
-	CreateCourseV1(context.Context, *CreateCourseV1Request) (*CreateCourseV1Response, error)
+	CreateCourseV1(context.Context, *CreateCourseV1Request) (*SuccessV1, error)
 	// Описание курса
 	DescribeCourseV1(context.Context, *DescribeCourseV1Request) (*DescribeCourseV1Response, error)
 	// Список всех доступных курсов
 	ListCourseV1(context.Context, *ListCourseV1Request) (*ListCourseV1Response, error)
 	// Удаление курса
-	RemoveCourseV1(context.Context, *RemoveCourseV1Request) (*RemoveCourseV1Response, error)
+	RemoveCourseV1(context.Context, *RemoveCourseV1Request) (*SuccessV1, error)
+	// Множественное добавление курсов
+	MultiCreateCourseV1(context.Context, *MultiCreateCourseV1Request) (*MultiCreateCourseV1Response, error)
+	// Обновление курса
+	UpdateCourseV1(context.Context, *UpdateCourseV1Request) (*SuccessV1, error)
 	mustEmbedUnimplementedCourseServer()
 }
 
@@ -91,7 +117,7 @@ type CourseServer interface {
 type UnimplementedCourseServer struct {
 }
 
-func (UnimplementedCourseServer) CreateCourseV1(context.Context, *CreateCourseV1Request) (*CreateCourseV1Response, error) {
+func (UnimplementedCourseServer) CreateCourseV1(context.Context, *CreateCourseV1Request) (*SuccessV1, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateCourseV1 not implemented")
 }
 func (UnimplementedCourseServer) DescribeCourseV1(context.Context, *DescribeCourseV1Request) (*DescribeCourseV1Response, error) {
@@ -100,8 +126,14 @@ func (UnimplementedCourseServer) DescribeCourseV1(context.Context, *DescribeCour
 func (UnimplementedCourseServer) ListCourseV1(context.Context, *ListCourseV1Request) (*ListCourseV1Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCourseV1 not implemented")
 }
-func (UnimplementedCourseServer) RemoveCourseV1(context.Context, *RemoveCourseV1Request) (*RemoveCourseV1Response, error) {
+func (UnimplementedCourseServer) RemoveCourseV1(context.Context, *RemoveCourseV1Request) (*SuccessV1, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RemoveCourseV1 not implemented")
+}
+func (UnimplementedCourseServer) MultiCreateCourseV1(context.Context, *MultiCreateCourseV1Request) (*MultiCreateCourseV1Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MultiCreateCourseV1 not implemented")
+}
+func (UnimplementedCourseServer) UpdateCourseV1(context.Context, *UpdateCourseV1Request) (*SuccessV1, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCourseV1 not implemented")
 }
 func (UnimplementedCourseServer) mustEmbedUnimplementedCourseServer() {}
 
@@ -188,6 +220,42 @@ func _Course_RemoveCourseV1_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Course_MultiCreateCourseV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MultiCreateCourseV1Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CourseServer).MultiCreateCourseV1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ova.course.api.Course/MultiCreateCourseV1",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CourseServer).MultiCreateCourseV1(ctx, req.(*MultiCreateCourseV1Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Course_UpdateCourseV1_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCourseV1Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CourseServer).UpdateCourseV1(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ova.course.api.Course/UpdateCourseV1",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CourseServer).UpdateCourseV1(ctx, req.(*UpdateCourseV1Request))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Course_ServiceDesc is the grpc.ServiceDesc for Course service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -210,6 +278,14 @@ var Course_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RemoveCourseV1",
 			Handler:    _Course_RemoveCourseV1_Handler,
+		},
+		{
+			MethodName: "MultiCreateCourseV1",
+			Handler:    _Course_MultiCreateCourseV1_Handler,
+		},
+		{
+			MethodName: "UpdateCourseV1",
+			Handler:    _Course_UpdateCourseV1_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
