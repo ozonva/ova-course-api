@@ -3,7 +3,6 @@ package kafka_client
 import (
 	"encoding/json"
 	"github.com/ozonva/ova-course-api/internal/course"
-	"github.com/segmentio/kafka-go"
 	"strconv"
 )
 
@@ -34,12 +33,6 @@ func (p *producer) UpdateEvent(item course.Course) error {
 
 func (p *producer) DeleteEvent(id uint64) error {
 	strId := strconv.FormatUint(id, 10)
-	_, err := p.conn.WriteMessages(
-		kafka.Message{
-			Key:   []byte(delete),
-			Value: []byte(strId),
-		},
-	)
-	err = p.Send([]byte(delete), []byte(strId))
+	err := p.Send([]byte(delete), []byte(strId))
 	return err
 }
